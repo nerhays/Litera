@@ -34,7 +34,7 @@
     </script>
 
     <script>
-      const produk = [
+      const dummyproduk = [
         {
           id: 1,
           nama: "Petualangan di Dunia Ajaib",
@@ -81,6 +81,7 @@
           harga: 90000,
         },
       ];
+      const produk = JSON.parse(localStorage.getItem("productList")) || [];
 
       function formatRupiah(angka) {
         return new Intl.NumberFormat("id-ID", {
