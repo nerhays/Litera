@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Detail Artikel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+      .artikel-img {
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5" id="artikelDetail">
+      <!-- Isi artikel akan dimuat melalui JS -->
+    </div>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const artikelId = parseInt(urlParams.get("id"));
+
+      // Dummy data sebagai fallback
+      const dummyArticles = [
+        {
+          id: 1,
+          judul: "Manfaat Membaca Buku Setiap Hari",
+          penulis: "Admin Litera",
+          tanggal: "9 Juni 2025",
+          isi: "Membaca buku setiap hari memiliki banyak manfaat bagi kesehatan mental dan perkembangan pengetahuan. Dengan membaca, kita bisa memperluas wawasan dan meningkatkan kemampuan berpikir kritis.",
+          gambar: "https://via.placeholder.com/400x200.png?text=Artikel+1",
+        },
+        {
+          id: 2,
+          judul: "5 Buku yang Wajib Dibaca di Tahun Ini",
+          penulis: "Tim Kurasi Litera",
+          tanggal: "8 Juni 2025",
+          isi: "Kami telah merangkum 5 buku yang sangat direkomendasikan untuk dibaca di tahun ini, mulai dari fiksi, non-fiksi, hingga pengembangan diri. Simak daftarnya dan cari inspirasi bacaan baru!",
+          gambar: "https://via.placeholder.com/400x200.png?text=Artikel+2",
+        },
+        {
+          id: 3,
+          judul: "Tips Membuat Jadwal Membaca Efektif",
+          penulis: "Litera Tips",
+          tanggal: "7 Juni 2025",
+          isi: "Sulit meluangkan waktu untuk membaca? Artikel ini akan membantu kamu menyusun jadwal membaca yang efektif dan konsisten, bahkan untuk jadwal yang sibuk.",
+          gambar: "https://via.placeholder.com/400x200.png?text=Artikel+3",
+        },
+      ];
+
+      // Ambil data dari localStorage
+      const artikelList = JSON.parse(localStorage.getItem("promoArticles")) || [];
+
+      // Gunakan dummy jika localStorage kosong
+      const finalArticles = artikelList.length === 0 ? dummyArticles : artikelList;
+
+      // Cari artikel berdasarkan ID
+      const artikel = finalArticles.find((a) => a.id === artikelId);
+
+      if (artikel) {
+        document.getElementById("artikelDetail").innerHTML = `
+      <h2>${artikel.judul}</h2>
+      <p class="text-muted">Oleh ${artikel.penulis} | ${artikel.tanggal}</p>
+      <img src="${artikel.gambar}" alt="Gambar" class="artikel-img mb-3"/>
+      <p>${artikel.isi}</p>
+      <a href="artikel.html" class="btn btn-secondary mt-3">← Kembali ke daftar artikel</a>
+    `;
+      } else {
+        document.getElementById("artikelDetail").innerHTML = `<p class="text-danger">Artikel tidak ditemukan.</p>`;
+      }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kelola Produk</title>
+    <link rel="stylesheet" href="template.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f8f9fa;
+      }
+
+      .main-content {
+        margin-left: 250px;
+        padding: 20px;
+      }
+
+      .table td,
+      .table th {
+        vertical-align: middle;
+      }
+
+      .produk-img {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body onload="loadAdminInfo()">
+    <!-- Navbar -->
+    <div id="navbar"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="container-fluid mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3>Manajemen Produk</h3>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahProdukModal"><i class="bi bi-plus-circle me-1"></i> Tambah Produk</button>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle">
+                <thead class="table-dark">
+                  <tr>
+                    <th>No</th>
+                    <th>Nama Produk</th>
+                    <th>Kategori</th>
+                    <th>Penulis</th>
+                    <th>Deskripsi</th>
+                    <th>Harga</th>
+                    <th>Stok</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="produkTableBody">
+                  <!-- Baris produk akan diisi melalui JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Tambah Produk -->
+    <div class="modal fade" id="tambahProdukModal" tabindex="-1" aria-labelledby="tambahProdukModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <form id="formTambahProduk" onsubmit="tambahProduk(event)">
+            <div class="modal-header">
+              <h5 class="modal-title" id="tambahProdukModalLabel">Tambah Produk Baru</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="namaProduk" class="form-label">Nama Produk</label>
+                <input type="text" id="namaProduk" name="namaProduk" class="form-control" required />
+              </div>
+              <div class="mb-3">
+                <label for="kategoriProduk" class="form-label">Kategori</label>
+                <select id="kategoriProduk" name="kategoriProduk" class="form-select" required>
+                  <option value="">-- Pilih Kategori --</option>
+                  <option value="Fiksi">Fiksi</option>
+                  <option value="Nonfiksi">Nonfiksi</option>
+                  <option value="Teknologi">Teknologi</option>
+                  <option value="Pendidikan">Pendidikan</option>
+                  <option value="Novel">Novel</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="hargaProduk" class="form-label">Harga (Rp)</label>
+                <input type="number" id="hargaProduk" name="hargaProduk" class="form-control" min="0" required />
+              </div>
+              <div class="mb-3">
+                <label for="stokProduk" class="form-label">Stok</label>
+                <input type="number" id="stokProduk" name="stokProduk" class="form-control" min="0" required />
+              </div>
+              <div class="mb-3">
+                <label for="gambarProduk" class="form-label">URL Gambar Produk</label>
+                <input type="url" id="gambarProduk" name="gambarProduk" class="form-control" required />
+              </div>
+              <!-- Tambahkan di dalam <div class="modal-body"> -->
+
+              <div class="mb-3">
+                <label for="penulisProduk" class="form-label">Penulis</label>
+                <input type="text" id="penulisProduk" name="penulisProduk" class="form-control" required />
+              </div>
+
+              <div class="mb-3">
+                <label for="deskripsiProduk" class="form-label">Deskripsi</label>
+                <textarea id="deskripsiProduk" name="deskripsiProduk" class="form-control" required></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label for="sinopsisProduk" class="form-label">Sinopsis</label>
+                <textarea id="sinopsisProduk" name="sinopsisProduk" class="form-control" required></textarea>
+              </div>
+
+              <hr />
+              <h5>Detail Produk</h5>
+
+              <div class="mb-3">
+                <label for="penerbitProduk" class="form-label">Penerbit</label>
+                <input type="text" id="penerbitProduk" name="penerbitProduk" class="form-control" required />
+              </div>
+              <div class="mb-3">
+                <label for="tahunTerbitProduk" class="form-label">Tahun Terbit</label>
+                <input type="number" id="tahunTerbitProduk" name="tahunTerbitProduk" class="form-control" required />
+              </div>
+              <div class="mb-3">
+                <label for="halamanProduk" class="form-label">Jumlah Halaman</label>
+                <input type="number" id="halamanProduk" name="halamanProduk" class="form-control" required />
+              </div>
+              <div class="mb-3">
+                <label for="bahasaProduk" class="form-label">Bahasa</label>
+                <input type="text" id="bahasaProduk" name="bahasaProduk" class="form-control" required />
+              </div>
+              <div class="mb-3">
+                <label for="isbnProduk" class="form-label">ISBN</label>
+                <input type="text" id="isbnProduk" name="isbnProduk" class="form-control" required />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-primary">Simpan Produk</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 bg-light mt-4">
+      <small>&copy; 2025 Sistem Informasi Admin</small>
+    </footer>
+
+    <!-- Script -->
+    <script src="../script.js"></script>
+    <script>
+      function loadAdminInfo() {
+        const user = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (!user || user.role !== "admin") {
+          window.location.href = "../login.html";
+          return;
+        }
+      }
+
+      let dummyProduk = JSON.parse(localStorage.getItem("productList")) || [];
+
+      function renderProdukTable() {
+        const tbody = document.getElementById("produkTableBody");
+        tbody.innerHTML = "";
+
+        dummyProduk.forEach((produk, index) => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>
+                <img src="${produk.gambar}" alt="Gambar Produk" class="produk-img" />
+                <br />
+                ${produk.nama}
+              </td>
+              <td>${produk.kategori}</td>
+              <td>${produk.penulis}</td>
+              <td>${produk.deskripsi}</td>
+              <td>Rp ${produk.harga.toLocaleString("id-ID")}</td>
+              <td>${produk.stok}</td>
+              <td>
+                <button class="btn btn-sm btn-warning me-1" onclick="editProduk(${produk.id})"><i class="bi bi-pencil"></i></button>
+                <button onclick="hapusProduk(${produk.id})" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      function hapusProduk(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus produk ini?")) {
+          dummyProduk = dummyProduk.filter((produk) => produk.id !== id);
+          localStorage.setItem("productList", JSON.stringify(dummyProduk));
+          renderProdukTable();
+        }
+      }
+
+      function tambahProduk(event) {
+        event.preventDefault();
+
+        const nama = document.getElementById("namaProduk").value.trim();
+        const kategori = document.getElementById("kategoriProduk").value.trim();
+        const harga = parseInt(document.getElementById("hargaProduk").value);
+        const stok = parseInt(document.getElementById("stokProduk").value);
+        const gambar = document.getElementById("gambarProduk").value.trim();
+        const penulis = document.getElementById("penulisProduk").value.trim();
+        const deskripsi = document.getElementById("deskripsiProduk").value.trim();
+        const sinopsis = document.getElementById("sinopsisProduk").value.trim();
+        const penerbit = document.getElementById("penerbitProduk").value.trim();
+        const tahunTerbit = parseInt(document.getElementById("tahunTerbitProduk").value);
+        const halaman = parseInt(document.getElementById("halamanProduk").value);
+        const bahasa = document.getElementById("bahasaProduk").value.trim();
+        const isbn = document.getElementById("isbnProduk").value.trim();
+
+        if (!nama || !kategori || isNaN(harga) || isNaN(stok) || !gambar) {
+          alert("Semua field wajib diisi dengan benar!");
+          return;
+        }
+
+        const newId = dummyProduk.length ? dummyProduk[dummyProduk.length - 1].id + 1 : 1;
+
+        const newProduk = {
+          id: newId,
+          nama,
+          kategori,
+          harga,
+          stok,
+          gambar,
+          penulis,
+          deskripsi,
+          sinopsis,
+          detail: {
+            penerbit,
+            tahunTerbit,
+            halaman,
+            bahasa,
+            isbn,
+          },
+        };
+
+        dummyProduk.push(newProduk);
+        localStorage.setItem("productList", JSON.stringify(dummyProduk));
+
+        renderProdukTable();
+        event.target.reset();
+        const modal = bootstrap.Modal.getInstance(document.getElementById("tambahProdukModal"));
+        modal.hide();
+      }
+
+      function editProduk(id) {
+        const produk = dummyProduk.find((p) => p.id === id);
+        if (!produk) return;
+
+        // Isi form dengan data produk yang ingin diedit
+        document.getElementById("namaProduk").value = produk.nama;
+        document.getElementById("kategoriProduk").value = produk.kategori;
+        document.getElementById("hargaProduk").value = produk.harga;
+        document.getElementById("stokProduk").value = produk.stok;
+        document.getElementById("gambarProduk").value = produk.gambar;
+        document.getElementById("penulisProduk").value = produk.penulis;
+        document.getElementById("deskripsiProduk").value = produk.deskripsi;
+        document.getElementById("sinopsisProduk").value = produk.sinopsis;
+        document.getElementById("penerbitProduk").value = produk.detail.penerbit;
+        document.getElementById("tahunTerbitProduk").value = produk.detail.tahunTerbit;
+        document.getElementById("halamanProduk").value = produk.detail.halaman;
+        document.getElementById("bahasaProduk").value = produk.detail.bahasa;
+        document.getElementById("isbnProduk").value = produk.detail.isbn;
+
+        // Ganti handler form agar menyimpan edit, bukan tambah
+        const form = document.getElementById("formTambahProduk");
+        form.onsubmit = function (event) {
+          event.preventDefault();
+
+          produk.nama = document.getElementById("namaProduk").value.trim();
+          produk.kategori = document.getElementById("kategoriProduk").value.trim();
+          produk.harga = parseInt(document.getElementById("hargaProduk").value);
+          produk.stok = parseInt(document.getElementById("stokProduk").value);
+          produk.gambar = document.getElementById("gambarProduk").value.trim();
+          produk.penulis = document.getElementById("penulisProduk").value.trim();
+          produk.deskripsi = document.getElementById("deskripsiProduk").value.trim();
+          produk.sinopsis = document.getElementById("sinopsisProduk").value.trim();
+          produk.detail = {
+            penerbit: document.getElementById("penerbitProduk").value.trim(),
+            tahunTerbit: parseInt(document.getElementById("tahunTerbitProduk").value),
+            halaman: parseInt(document.getElementById("halamanProduk").value),
+            bahasa: document.getElementById("bahasaProduk").value.trim(),
+            isbn: document.getElementById("isbnProduk").value.trim(),
+          };
+
+          localStorage.setItem("productList", JSON.stringify(dummyProduk));
+          renderProdukTable();
+
+          // Reset form & modal
+          form.reset();
+          const modal = bootstrap.Modal.getInstance(document.getElementById("tambahProdukModal"));
+          modal.hide();
+
+          // Kembalikan handler form ke tambahProduk
+          form.onsubmit = tambahProduk;
+        };
+
+        // Tampilkan modal
+        const modal = new bootstrap.Modal(document.getElementById("tambahProdukModal"));
+        modal.show();
+      }
+
+      document.addEventListener("DOMContentLoaded", renderProdukTable);
+
+      // Load navbar dan sidebar
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-container").innerHTML = data;
+        });
+
+      fetch("navbar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("navbar").innerHTML = data;
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

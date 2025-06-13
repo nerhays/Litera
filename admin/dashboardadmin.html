@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="template.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f8f9fa;
+      }
+
+      .main-content {
+        margin-left: 250px;
+        padding: 20px;
+      }
+
+      .card {
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body onload="loadAdminInfo()">
+    <!-- Navbar -->
+    <div id="navbar"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="container-fluid mt-5">
+        <h3 class="mb-4">Selamat datang, <span id="adminName">Admin</span>!</h3>
+
+        <div class="row">
+          <!-- Card Statistik 1 -->
+          <div class="col-md-4 mb-4">
+            <div class="card text-white bg-primary shadow">
+              <div class="card-body">
+                <h5 class="card-title">Jumlah Pengguna</h5>
+                <p class="card-text">125 user terdaftar</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Statistik 2 -->
+          <div class="col-md-4 mb-4">
+            <div class="card text-white bg-success shadow">
+              <div class="card-body">
+                <h5 class="card-title">Laporan Aktif</h5>
+                <p class="card-text">12 laporan aktif bulan ini</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Statistik 3 -->
+          <div class="col-md-4 mb-4">
+            <div class="card text-white bg-warning shadow">
+              <div class="card-body">
+                <h5 class="card-title">Aktivitas Terbaru</h5>
+                <p class="card-text">5 user login hari ini</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Konten -->
+        <div class="card mt-3">
+          <div class="card-header bg-dark text-white"><i class="fas fa-info-circle me-2"></i>Informasi Sistem</div>
+          <div class="card-body">
+            <p class="card-text">Anda dapat mengelola pengguna, memantau laporan, dan mengatur sistem dari dashboard ini.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 Sistem Informasi Admin. All rights reserved.</p>
+    </footer>
+
+    <!-- Script -->
+    <script src="../script.js"></script>
+    <script>
+      function loadAdminInfo() {
+        const user = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (!user || user.role !== "admin") {
+          window.location.href = "../login.html";
+          return;
+        }
+        document.getElementById("adminName").textContent = user.username;
+      }
+    </script>
+    <script>
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-container").innerHTML = data;
+        });
+      fetch("navbar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("navbar").innerHTML = data;
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

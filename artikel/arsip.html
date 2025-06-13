@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Litera - Artikel</title>
+    <link rel="stylesheet" href="../styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+      .card-img-top {
+        height: 200px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar"></div>
+    <div class="container py-5">
+      <h2 class="mb-4"><b>Artikel Terbaru</b></h2>
+      <div class="row" id="daftarArtikel">
+        <!-- Kumpulan artikel akan muncul di sini -->
+      </div>
+    </div>
+    <div id="footer"></div>
+    <script>
+      fetch("../template/navbar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("navbar").innerHTML = data;
+          updateNavbarLoginStatus();
+        });
+
+      fetch("../template/footer.html")
+        .then((res) => res.text())
+        .then((data) => {
+          document.getElementById("footer").innerHTML = data;
+        });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const daftarArtikel = document.getElementById("daftarArtikel");
+
+        // Data dummy jika localStorage kosong
+        const dummyArticles = [
+          {
+            id: 1,
+            judul: "Manfaat Membaca Buku Setiap Hari",
+            penulis: "Admin Litera",
+            tanggal: "9 Juni 2025",
+            isi: "Membaca buku setiap hari memiliki banyak manfaat bagi kesehatan mental dan perkembangan pengetahuan...",
+            gambar: "https://via.placeholder.com/400x200.png?text=Artikel+1",
+          },
+          {
+            id: 2,
+            judul: "5 Buku yang Wajib Dibaca di Tahun Ini",
+            penulis: "Tim Kurasi Litera",
+            tanggal: "8 Juni 2025",
+            isi: "Kami telah merangkum 5 buku yang sangat direkomendasikan untuk dibaca di tahun ini, mulai dari fiksi hingga pengembangan diri...",
+            gambar: "https://via.placeholder.com/400x200.png?text=Artikel+2",
+          },
+          {
+            id: 3,
+            judul: "Tips Membuat Jadwal Membaca Efektif",
+            penulis: "Litera Tips",
+            tanggal: "7 Juni 2025",
+            isi: "Sulit meluangkan waktu untuk membaca? Artikel ini akan membantu kamu menyusun jadwal yang realistis...",
+            gambar: "https://via.placeholder.com/400x200.png?text=Artikel+3",
+          },
+        ];
+
+        // Ambil data dari localStorage
+        const artikelList = JSON.parse(localStorage.getItem("promoArticles")) || [];
+
+        // Gunakan dummy data jika localStorage kosong
+        const finalArticles = artikelList.length === 0 ? dummyArticles : artikelList;
+
+        finalArticles.forEach((artikel) => {
+          daftarArtikel.innerHTML += `
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <img src="${artikel.gambar}" class="card-img-top" alt="${artikel.judul}" />
+            <div class="card-body">
+              <h5 class="card-title">${artikel.judul}</h5>
+              <p class="card-text text-muted small">Oleh ${artikel.penulis} - ${artikel.tanggal}</p>
+              <p class="card-text">${artikel.isi.slice(0, 100)}...</p>
+              <a href="detail.html?id=${artikel.id}" class="btn btn-primary btn-sm">Baca Selengkapnya</a>
+            </div>
+          </div>
+        </div>
+      `;
+        });
+      });
+    </script>
+
+    <script src="../script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

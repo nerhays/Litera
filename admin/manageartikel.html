@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kelola Artikel</title>
+    <link rel="stylesheet" href="template.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f8f9fa;
+      }
+
+      .main-content {
+        margin-left: 250px;
+        padding: 20px;
+      }
+
+      .table td,
+      .table th {
+        vertical-align: middle;
+      }
+
+      .artikel-img {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body onload="loadAdminInfo()">
+    <!-- Navbar -->
+    <div id="navbar"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="container-fluid mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3>Manajemen Artikel</h3>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahArtikelModal"><i class="bi bi-plus-circle me-1"></i> Tambah Artikel</button>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle">
+                <thead class="table-dark">
+                  <tr>
+                    <th>No</th>
+                    <th>Judul</th>
+                    <th>Penulis</th>
+                    <th>Tanggal</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="artikelTableBody">
+                  <!-- Baris artikel akan diisi melalui JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Tambah Artikel -->
+    <div class="modal fade" id="tambahArtikelModal" tabindex="-1" aria-labelledby="tambahArtikelModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <form id="formTambahArtikel" onsubmit="tambahArtikel(event)">
+            <div class="modal-header">
+              <h5 class="modal-title" id="tambahArtikelModalLabel">Tambah Artikel Baru</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="judulArtikel" class="form-label">Judul Artikel</label>
+                <input type="text" id="judulArtikel" name="judulArtikel" class="form-control" required />
+              </div>
+              <div class="mb-3">
+                <label for="penulisArtikel" class="form-label">Penulis</label>
+                <input type="text" id="penulisArtikel" name="penulisArtikel" class="form-control" required />
+              </div>
+              <div class="mb-3">
+                <label for="isiArtikel" class="form-label">Isi Artikel</label>
+                <textarea id="isiArtikel" name="isiArtikel" class="form-control" rows="6" required></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="tanggalArtikel" class="form-label">Tanggal</label>
+                <input type="date" id="tanggalArtikel" name="tanggalArtikel" class="form-control" required />
+              </div>
+              <div class="mb-3">
+                <label for="gambarArtikel" class="form-label">URL Gambar Artikel</label>
+                <input type="url" id="gambarArtikel" name="gambarArtikel" class="form-control" required />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-primary">Simpan Artikel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-3 bg-light mt-4">
+      <small>&copy; 2025 Sistem Informasi Admin</small>
+    </footer>
+
+    <!-- Script -->
+    <script src="../script.js"></script>
+    <script>
+      function loadAdminInfo() {
+        const user = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (!user || user.role !== "admin") {
+          window.location.href = "../login.html";
+          return;
+        }
+      }
+
+      let dummyArtikel = JSON.parse(localStorage.getItem("promoArticles")) || [];
+
+      function renderArtikelTable() {
+        const tbody = document.getElementById("artikelTableBody");
+        tbody.innerHTML = "";
+
+        dummyArtikel.forEach((artikel, index) => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>
+                <img src="${artikel.gambar}" alt="Gambar Artikel" class="artikel-img" />
+                <br />
+                <a href="../artikel/detail.html?id=${artikel.id}">${artikel.judul}</a>
+              </td>
+              <td>${artikel.penulis}</td>
+              <td>${artikel.tanggal}</td>
+              <td>
+                <button class="btn btn-sm btn-warning me-1" onclick="editArtikel(${artikel.id})"><i class="bi bi-pencil"></i></button>
+                <button onclick="hapusArtikel(${artikel.id})" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      function hapusArtikel(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus artikel ini?")) {
+          dummyArtikel = dummyArtikel.filter((artikel) => artikel.id !== id);
+          localStorage.setItem("promoArticles", JSON.stringify(dummyArtikel));
+          renderArtikelTable();
+        }
+      }
+
+      function tambahArtikel(event) {
+        event.preventDefault();
+
+        const judul = document.getElementById("judulArtikel").value.trim();
+        const penulis = document.getElementById("penulisArtikel").value.trim();
+        const isi = document.getElementById("isiArtikel").value.trim();
+        const tanggal = document.getElementById("tanggalArtikel").value;
+        const gambar = document.getElementById("gambarArtikel").value.trim();
+
+        if (!judul || !penulis || !isi || !tanggal || !gambar) {
+          alert("Semua field wajib diisi!");
+          return;
+        }
+
+        const newId = dummyArtikel.length ? dummyArtikel[dummyArtikel.length - 1].id + 1 : 1;
+
+        const newArtikel = {
+          id: newId,
+          judul,
+          penulis,
+          tanggal,
+          isi,
+          gambar,
+        };
+
+        dummyArtikel.push(newArtikel);
+        localStorage.setItem("promoArticles", JSON.stringify(dummyArtikel));
+
+        renderArtikelTable();
+        event.target.reset();
+        const modal = bootstrap.Modal.getInstance(document.getElementById("tambahArtikelModal"));
+        modal.hide();
+      }
+
+      document.addEventListener("DOMContentLoaded", renderArtikelTable);
+    </script>
+
+    <script>
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-container").innerHTML = data;
+        });
+
+      fetch("navbar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("navbar").innerHTML = data;
+        });
+
+      function editArtikel(id) {
+        const artikel = dummyArtikel.find((a) => a.id === id);
+        if (!artikel) return;
+
+        // Isi form dengan data artikel yang ingin diedit
+        document.getElementById("judulArtikel").value = artikel.judul;
+        document.getElementById("penulisArtikel").value = artikel.penulis;
+        document.getElementById("isiArtikel").value = artikel.isi;
+        document.getElementById("tanggalArtikel").value = artikel.tanggal;
+        document.getElementById("gambarArtikel").value = artikel.gambar;
+
+        // Ganti handler form agar menyimpan edit, bukan tambah
+        const form = document.getElementById("formTambahArtikel");
+        form.onsubmit = function (event) {
+          event.preventDefault();
+          artikel.judul = document.getElementById("judulArtikel").value.trim();
+          artikel.penulis = document.getElementById("penulisArtikel").value.trim();
+          artikel.isi = document.getElementById("isiArtikel").value.trim();
+          artikel.tanggal = document.getElementById("tanggalArtikel").value;
+          artikel.gambar = document.getElementById("gambarArtikel").value.trim();
+
+          localStorage.setItem("promoArticles", JSON.stringify(dummyArtikel));
+          renderArtikelTable();
+
+          // Reset form & modal
+          form.reset();
+          const modal = bootstrap.Modal.getInstance(document.getElementById("tambahArtikelModal"));
+          modal.hide();
+
+          // Kembalikan handler form ke tambahArtikel
+          form.onsubmit = tambahArtikel;
+        };
+
+        // Tampilkan modal
+        const modal = new bootstrap.Modal(document.getElementById("tambahArtikelModal"));
+        modal.show();
+      }
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

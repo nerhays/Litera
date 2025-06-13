@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kelola Pengguna</title>
+    <link rel="stylesheet" href="template.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+      html,
+      body {
+        overflow-x: hidden;
+      }
+      body {
+        padding: 2rem;
+        background-color: #f8f9fa;
+      }
+      .container {
+        margin-left: 250px;
+        padding-top: 80px;
+      }
+      .table-responsive {
+        max-width: 700px;
+        overflow-x: auto;
+      }
+      table th,
+      table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      #new-username,
+      #new-password {
+        max-width: 200px;
+      }
+      button.btn-primary {
+        min-width: 100px;
+      }
+    </style>
+  </head>
+  <body onload="loadAdminInfo()">
+    <!-- Navbar -->
+    <div id="navbar"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <div class="container">
+      <h2 class="mt-1 mb-4">Kelola Pengguna</h2>
+
+      <div class="card mb-4" style="max-width: 600px">
+        <div class="card-body">
+          <h5>Tambah Pengguna</h5>
+          <div class="row g-2 align-items-center">
+            <div class="col-auto">
+              <input type="text" id="new-username" class="form-control" placeholder="Username" />
+            </div>
+            <div class="col-auto">
+              <input type="password" id="new-password" class="form-control" placeholder="Password" />
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-primary" onclick="addUser()">Tambah</button>
+            </div>
+          </div>
+          <p class="text-danger mt-2" id="add-message"></p>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th style="width: 5%">#</th>
+              <th style="width: 30%">Username</th>
+              <th style="width: 15%">Role</th>
+              <th style="width: 30%">Password</th>
+              <th style="width: 20%">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="user-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      function loadAdminInfo() {
+        const user = JSON.parse(localStorage.getItem("loggedInUser"));
+        if (!user || user.role !== "admin") {
+          window.location.href = "../login.html";
+          return;
+        }
+        const adminNameElement = document.getElementById("adminName");
+        if (adminNameElement) adminNameElement.textContent = user.username;
+      }
+
+      window.onload = function () {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const adminExists = users.some((user) => user.username === "admin@gmail.com");
+        if (!adminExists) {
+          users.push({ username: "admin@gmail.com", password: "admin123", role: "admin" });
+          localStorage.setItem("users", JSON.stringify(users));
+        }
+        loadUsers();
+      };
+
+      function loadUsers() {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const table = document.getElementById("user-table");
+        table.innerHTML = "";
+
+        users.forEach((user, index) => {
+          table.innerHTML += `
+            <tr id="row-${index}">
+              <td>${index + 1}</td>
+              <td id="username-${index}">${user.username}</td>
+              <td>${user.role || "user"}</td>
+              <td id="password-${index}">••••••••</td>
+              <td>
+                <button class="btn btn-warning btn-sm" onclick="toggleEdit(${index})" id="edit-btn-${index}">
+                  <i class="bi bi-pencil-square"></i> Edit
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="deleteUser(${index})">
+                  <i class="bi bi-trash"></i> Hapus
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      function toggleEdit(index) {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const usernameCell = document.getElementById(`username-${index}`);
+        const passwordCell = document.getElementById(`password-${index}`);
+        const editBtn = document.getElementById(`edit-btn-${index}`);
+
+        if (editBtn.textContent.includes("Edit")) {
+          usernameCell.innerHTML = `<input type="text" class="form-control" id="edit-username-${index}" value="${users[index].username}">`;
+          passwordCell.innerHTML = `<input type="password" class="form-control" id="edit-password-${index}" value="${users[index].password}">`;
+          editBtn.innerHTML = `<i class="bi bi-save"></i> Simpan`;
+          editBtn.classList.remove("btn-warning");
+          editBtn.classList.add("btn-success");
+        } else {
+          const newUsername = document.getElementById(`edit-username-${index}`).value.trim();
+          const newPassword = document.getElementById(`edit-password-${index}`).value.trim();
+
+          if (!newUsername || !newPassword) {
+            alert("Username dan password tidak boleh kosong!");
+            return;
+          }
+
+          users[index].username = newUsername;
+          users[index].password = newPassword;
+          localStorage.setItem("users", JSON.stringify(users));
+          loadUsers();
+        }
+      }
+
+      function addUser() {
+        const username = document.getElementById("new-username").value.trim();
+        const password = document.getElementById("new-password").value.trim();
+        const message = document.getElementById("add-message");
+
+        if (!username || !password) {
+          message.textContent = "Username dan Password harus diisi!";
+          return;
+        }
+
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        if (users.find((u) => u.username === username)) {
+          message.textContent = "Username sudah digunakan!";
+          return;
+        }
+
+        users.push({ username, password, role: "user" });
+        localStorage.setItem("users", JSON.stringify(users));
+        document.getElementById("new-username").value = "";
+        document.getElementById("new-password").value = "";
+        message.textContent = "";
+        loadUsers();
+      }
+
+      function deleteUser(index) {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        if (users[index].username === "admin@gmail.com") {
+          alert("Akun admin tidak bisa dihapus.");
+          return;
+        }
+        users.splice(index, 1);
+        localStorage.setItem("users", JSON.stringify(users));
+        loadUsers();
+      }
+    </script>
+
+    <script>
+      fetch("sidebar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("sidebar-container").innerHTML = data;
+        });
+      fetch("navbar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("navbar").innerHTML = data;
+        });
+    </script>
+    <script src="../script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

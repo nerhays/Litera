@@ -1,0 +1,119 @@
+/* Sidebar */
+.sidebar {
+  height: 100vh;
+  background-color: #2c2f33; /* abu gelap */
+  padding-top: 70px;
+  position: fixed;
+  width: 250px;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  z-index: 1000;
+}
+
+.sidebar a {
+  padding: 15px 25px;
+  text-decoration: none;
+  font-size: 16px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 8px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background-color: #40444b; /* abu lebih terang */
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Navbar */
+.navbar {
+  background-color: #1f2329; /* sangat gelap */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  padding: 10px 30px;
+  position: fixed;
+  top: 0;
+  left: 250px;
+  right: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.navbar .navbar-brand {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #ffffff;
+}
+
+.navbar button.btn {
+  background-color: transparent;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  border-radius: 30px;
+  padding: 6px 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.navbar button.btn:hover {
+  background-color: #5865f2; /* biru elegan */
+  color: #ffffff;
+  border-color: #5865f2;
+  box-shadow: 0 4px 15px rgba(88, 101, 242, 0.5);
+  cursor: pointer;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 250px;
+  padding: 90px 40px 40px 40px;
+  background-color: #ffffff; /* putih */
+  min-height: 100vh;
+  color: #2c2f33; /* abu gelap */
+}
+
+/* Card */
+.card {
+  border-radius: 15px;
+  background-color: #f8f9fa; /* abu muda */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: #1c1c1e;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card .card-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+/* Footer */
+footer {
+  background-color: #f8f9fa;
+  padding: 15px 20px;
+  text-align: center;
+  margin-left: 250px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+  color: #2c2f33;
+  position: fixed;
+  bottom: 0;
+  left: 250px;
+  right: 0;
+  z-index: 100;
+}
